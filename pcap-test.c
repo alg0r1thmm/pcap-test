@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <netinet/in.h>
 #define ETHER_ADDR_LEN 6
-#define LIBNET_IPV4_H 0x14 
 
 void usage() {
 	printf("syntax: pcap-test <interface>\n");
@@ -155,6 +154,8 @@ int main(int argc, char* argv[]) {
     			payload = (u_char *)(struct libnet_tcp_hdr*)(packet + 41);
 
     			if(ip->ip_p == 6){
+				printf("=========Best==of==the==Best===11th=========\n");
+				printf("--------------------PCAP--------------------\n");
 			        printf("%u bytes captured\n", header->caplen);
 
 			        printf("\n[Departure] Mac Address : ");
@@ -170,12 +171,17 @@ int main(int argc, char* argv[]) {
     				printf("[Arrival] IP Address : %s\n", inet_ntoa(ip->ip_dst));
 				printf("[Departure] Port : %d\n", ntohs(tcp->th_sport));
     				printf("[Arrival] Port : %d\n", ntohs(tcp->th_dport));
-    				printf("Payload : ");
+    				printf("[Hex] Payload : ");
 
     				for(int l=1; l<=10; l++){
-        				printf("%c ", payload[l]);
+        				printf("%x ", payload[l]);
     				}
-				printf("\n\n");
+				printf("\n");
+				printf("[PlaneText] Payload : ");
+				for(int o=1; o<=10; o++){
+					printf("%c ", payload[o]);
+				}
+				printf("\n--------------------------------------------\n\n");
     			}
 		}
 	}
