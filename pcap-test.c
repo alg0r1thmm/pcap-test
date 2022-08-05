@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <netinet/in.h>
+#include <string.h>
 #define ETHER_ADDR_LEN 6
 
 void usage() {
@@ -137,6 +138,7 @@ int main(int argc, char* argv[]) {
 		struct libnet_ipv4_hdr* ip;
 		struct libnet_tcp_hdr* tcp;
 		char* payload;
+		int pay_len;
 		const u_char*packet;
 
 		int res = pcap_next_ex(pcap, &header, &packet);
@@ -151,7 +153,8 @@ int main(int argc, char* argv[]) {
 		if(ntohs(ether->ether_type) == 0x0800){
     			ip = (struct libnet_ipv4_hdr*)(packet + 14);
     			tcp = (struct libnet_tcp_hdr*)(packet + 34);
-    			payload = (u_char *)(struct libnet_tcp_hdr*)(packet + 41);
+    			payload = (u_char *)(struct libnet_ethernet_hdr*)(packet + 65);
+			pay_len = strlen(payload);
 
     			if(ip->ip_p == 6){
 				printf("=========Best==of==the==Best===11th=========\n");
@@ -171,17 +174,24 @@ int main(int argc, char* argv[]) {
     				printf("[Arrival] IP Address : %s\n", inet_ntoa(ip->ip_dst));
 				printf("[Departure] Port : %d\n", ntohs(tcp->th_sport));
     				printf("[Arrival] Port : %d\n", ntohs(tcp->th_dport));
-    				printf("[Hex] Payload : ");
-
-    				for(int l=1; l<=10; l++){
-        				printf("%x ", payload[l]);
-    				}
-				printf("\n");
-				printf("[PlaneText] Payload : ");
-				for(int o=1; o<=10; o++){
-					printf("%c ", payload[o]);
+				
+				if(pay_len > 10){
+					printf("[Hex] Payload : ");
+	    				for(int l=1; l<=10; l++){
+	        				printf("%x ", payload[l]);
+	    				}
+					printf("\n");
+					printf("[PlaneText] Payload : ");
+					for(int o=1; o<=10; o++){
+						printf("%c ", payload[o]);
+					}
+				}
+				else{
+					printf("[Hex] Payload : Empty! \n");
+					printf("[PlaneText] Payload : Empty! \n");
 				}
 				printf("\n--------------------------------------------\n\n");
+				
     			}
 		}
 	}
